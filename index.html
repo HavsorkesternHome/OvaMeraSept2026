@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Öva mera!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #eff6ff 0%, #e0e7ff 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 48rem;
+            margin: 0 auto;
+        }
+
+        /* STARTSIDA */
+        .start-screen {
+            text-align: center;
+        }
+
+        .start-screen h1 {
+            font-size: 3rem;
+            background: linear-gradient(to right, #2563eb, #4f46e5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            margin-top: 3rem;
+        }
+
+        .start-screen p {
+            color: #4b5563;
+            font-size: 1.125rem;
+            margin-bottom: 3rem;
+        }
+
+        .activity-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .activity-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border: 2px solid #e5e7eb;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .activity-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            border-color: #2563eb;
+        }
+
+        .activity-card .emoji {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .activity-card h2 {
+            font-size: 1.5rem;
+            color: #2563eb;
+            margin-bottom: 0.5rem;
+        }
+
+        .activity-card p {
+            color: #6b7280;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .word-grid {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 2rem;
+        }
+
+        .word-grid h2 {
+            font-size: 1.5rem;
+            color: #1f2937;
+            margin-bottom: 1.5rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            max-height: 24rem;
+            overflow-y: auto;
+        }
+
+        .word-button {
+            padding: 1rem;
+            text-align: left;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 100%);
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .word-button:hover {
+            background: linear-gradient(135deg, #dbeafe 0%, #c7d2fe 100%);
+            border-color: #2563eb;
+            transform: scale(1.05);
+        }
+
+        .word-button .number {
+            font-size: 0.75rem;
+            color: #4f46e5;
+            font-weight: bold;
+        }
+
+        .word-button .finnish {
+            color: #2563eb;
+            margin-top: 0.25rem;
+        }
+
+        .word-button .swedish {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+
+        /* TRÄNINGSSKÄRMAR */
+        .training-screen {
+            display: none;
+        }
+
+        .training-screen.active {
+            display: block;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            background: linear-gradient(to right, #2563eb, #4f46e5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #4b5563;
+            font-size: 1.125rem;
+        }
+
+        .progress {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .progress-item {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+        }
+
+        .progress-item .number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4f46e5;
+        }
+
+        .progress-item .label {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .main-card {
+            background: white;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 1.5rem;
+        }
+
+        .word-box {
+            background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .word-box .label {
+            font-size: 0.875rem;
+            color: #4b5563;
+            margin-bottom: 0.5rem;
+        }
+
+        .word-box .finnish {
+            font-size: 2.25rem;
+            font-weight: bold;
+            color: #2563eb;
+            margin-bottom: 1rem;
+        }
+
+        .word-box .swedish {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #2563eb;
+            margin-bottom: 1.5rem;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+        }
+
+        .button-primary {
+            background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+            color: white;
+        }
+
+        .button-primary:hover {
+            transform: scale(1.05);
+        }
+
+        .button-primary:disabled {
+            background: linear-gradient(135deg, #9ca3af 0%, #9ca3af 100%);
+            cursor: not-allowed;
+        }
+
+        .button-secondary {
+            background: #e5e7eb;
+            color: #1f2937;
+        }
+
+        .button-secondary:hover {
+            background: #d1d5db;
+        }
+
+        .button-hint {
+            background: #a855f7;
+            color: white;
+            font-size: 1.5rem;
+            width: 3rem;
+            height: 3rem;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem;
+        }
+
+        .button-hint:hover {
+            background: #9333ea;
+        }
+
+        .button-back {
+            background: #f3f4f6;
+            color: #1f2937;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .button-back:hover {
+            background: #e5e7eb;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1.125rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            font-family: inherit;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        input[type="text"]:disabled {
+            background: #f3f4f6;
+            cursor: not-allowed;
+        }
+
+        .feedback-box {
+            background: #fef3c7;
+            border: 2px solid #fcd34d;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .feedback-box.hidden {
+            display: none;
+        }
+
+        .emoji-display {
+            font-size: 4rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .feedback-box .title {
+            font-size: 0.875rem;
+            color: #78350f;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .word-display {
+            background: white;
+            border: 2px solid #fcd34d;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .word-display .word {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2563eb;
+            margin-bottom: 0.5rem;
+        }
+
+        .word-display .word:first-child {
+            margin-bottom: 1rem;
+        }
+
+        .sentence-box {
+            background: #fef3c7;
+            border: 2px solid #fcd34d;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .sentence-box .label {
+            font-size: 0.875rem;
+            color: #78350f;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sentence-box .text {
+            font-size: 1.125rem;
+            color: #1f2937;
+            font-style: italic;
+        }
+
+        .button-speak {
+            background: #d97706;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            border: none;
+        }
+
+        .button-speak:hover {
+            background: #b45309;
+        }
+
+        .sentence-display {
+            background: white;
+            border: 2px solid #fcd34d;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            font-size: 1.125rem;
+            color: #1f2937;
+            font-style: italic;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .button-container .button-primary {
+            flex: 1;
+        }
+
+        .tips {
+            background: #dbeafe;
+            border: 2px solid #7dd3fc;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            font-size: 0.875rem;
+            color: #0c4a6e;
+        }
+
+        .tips strong {
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .feedback-message {
+            padding: 1rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .feedback-message.correct {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        .feedback-message.incorrect {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        .back-button-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-know {
+            background: linear-gradient(135deg, #16a34a, #15803d);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-know:hover { background: linear-gradient(135deg, #15803d, #166534); transform: translateY(-1px); }
+
+        .btn-practice-more {
+            background: linear-gradient(135deg, #d97706, #b45309);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-practice-more:hover { background: linear-gradient(135deg, #b45309, #92400e); transform: translateY(-1px); }
+
+        .summary-screen {
+            display: none;
+            text-align: center;
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+        .summary-screen.active { display: block; }
+        .summary-screen h2 { font-size: 2rem; color: #1f2937; margin-bottom: 1rem; }
+        .summary-screen p { color: #4b5563; margin-bottom: 1.5rem; }
+        .summary-word-list {
+            text-align: left;
+            background: #f9fafb;
+            border-radius: 0.75rem;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .summary-word-list li {
+            padding: 0.4rem 0;
+            color: #374151;
+            font-size: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .summary-word-list li:last-child { border-bottom: none; }
+        .btn-retry {
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.9rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-right: 1rem;
+            transition: all 0.2s;
+        }
+        .btn-retry:hover { transform: translateY(-1px); }
+        .btn-finish {
+            background: #e5e7eb;
+            color: #374151;
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.9rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-finish:hover { background: #d1d5db; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- STARTSIDA - Välj aktivitet -->
+        <div id="mainScreen" class="start-screen">
+            <h1>Öva mera!</h1>
+
+            
+            <div class="activity-selector">
+                <div class="activity-card" onclick="selectActivity('listen')">
+                    <div class="emoji">🔊</div>
+                    <h2>Höra & Skriva</h2>
+                    <p>Höra finskt ord och skriva svenska</p>
+                </div>
+                <div class="activity-card" onclick="selectActivity('write')">
+                    <div class="emoji">✍️</div>
+                    <h2>Skriva Finska</h2>
+                    <p>Läsa svenska och skriva finska ord</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- AKTIVITET 1: HÖRA OCH SKRIVA SVENSKA -->
+        <div id="listenScreen" class="training-screen">
+            <div class="back-button-container">
+                <button class="button button-back" onclick="backToMain()">← Tillbaka</button>
+            </div>
+
+            <div class="header">
+                <h1>Öva mera!</h1>
+                <p>Höra & Skriva Svenska</p>
+            </div>
+
+            <div class="progress">
+                <div class="progress-item">
+                    <div class="number" id="listenWordNumber">1/56</div>
+                    <div class="label">Ord</div>
+                </div>
+                <div class="progress-item">
+                    <div class="number" style="color: #16a34a;" id="listenCorrectCount">0</div>
+                    <div class="label">Rätt</div>
+                </div>
+                <div class="progress-item">
+                    <div class="number" style="color: #dc2626;" id="listenMistakeCount">0</div>
+                    <div class="label">Fel</div>
+                </div>
+            </div>
+
+            <div class="word-grid">
+                <h2>Välj vilket ord du vill börja med:</h2>
+                <div class="grid" id="listenWordList"></div>
+            </div>
+        </div>
+
+        <div id="listenTrainingScreen" class="training-screen">
+            <div class="back-button-container">
+                <button class="button button-back" onclick="backToActivitySelect('listen')">← Tillbaka</button>
+            </div>
+
+            <div class="header">
+                <h1>Öva mera!</h1>
+                <p>Höra & Skriva Svenska</p>
+            </div>
+
+            <div class="progress">
+                <div class="progress-item">
+                    <div class="number" id="listenTrainWordNumber">1/56</div>
+                    <div class="label">Ord</div>
+                </div>
+                <div class="progress-item">
+                    <div class="number" style="color: #16a34a;" id="listenTrainCorrectCount">0</div>
+                    <div class="label">Rätt</div>
+                </div>
+                <div class="progress-item">
+                    <div class="number" style="color: #dc2626;" id="listenTrainMistakeCount">0</div>
+                    <div class="label">Fel</div>
+                </div>
+            </div>
+
+            <div class="main-card">
+                <div class="word-box">
+                    <div class="label">Finska ordet:</div>
+                    <div class="finnish" id="listenFinnishWord">missä</div>
+                    <div class="button-group">
+                        <button class="button button-primary" onclick="listenSpeakWord()">🔊 Spela upp igen</button>
+                        <button class="button-hint" onclick="listenToggleHint()" id="listenHintBtn" title="Ledtråd">💡</button>
+                    </div>
+                </div>
+
+                <div class="sentence-box">
+                    <div class="label">
+                        <span>Exempel i mening:</span>
+                        <button class="button-speak" onclick="listenSpeakSentence()">Läs upp</button>
+                    </div>
+                    <div class="text" id="listenSentenceText">Missä sinä asut?</div>
+                </div>
+
+                <div class="input-group">
+                    <input type="text" id="listenAnswerInput" placeholder="Skriv det svenska ordet..." onkeypress="listenHandleKeyPress(event)">
+                </div>
+
+                <div id="listenFeedbackBox"></div>
+
+                <div class="button-container">
+                    <button class="button button-primary" id="listenCheckBtn" onclick="listenCheckAnswer()">Kontrollera ➜</button>
+                    <button class="btn-know" onclick="listenIKnow()">Jag kan ✓</button>
+                    <button class="btn-practice-more" onclick="listenPracticeMoreBtn()">Träna mera 🔁</button>
+                </div>
+            </div>
+
+            <div class="tips">
+                <strong>Tips:</strong> Lyssna noga på ordet! Du kan spela upp det hur många gånger som helst.
+            </div>
+        </div>
+
+        <!-- AKTIVITET 2: SKRIVA FINSKA -->
+        <div id="writeScreen" class="training-screen">
+            <div class="back-button-container">
+                <button class="button button-back" onclick="backToMain()">← Tillbaka</button>
+            </div>
+
+            <div class="header">
+                <h1>Öva mera!</h1>
+                <p>Skriva Finska</p>
+            </div>
+
+            <div class="progress">
+                <div class="progress-item">
+                    <div class="number" id="writeWordNumber">1/56</div>
+                    <div class="label">Ord</div>
+                </div>
+                <div class="progress-item">
+                    <div class="number" style="color: #16a34a;" id="writeCorrectCount">0</div>
+                    <div class="label">Rätt</div>
+                </div>
+                <div class="progress-item">
+                    <div class="number" style="color: #dc2626;" id="writeMistakeCount">0</div>
+                    <div class="label">Fel</div>
+                </div>
+            </div>
+
+            <div class="word-grid">
+                <h2>Välj vilket ord du vill börja med:</h2>
+                <div class="grid" id="writeWordList"></div>
+            </div>
+        </div>
+
+        <div id="writeTrainingScreen" class="training-screen">
+            <div class="back-button-container">
+                <button class="button button-back" onclick="backToActivitySelect('write')">← Tillbaka</button>
+            </div>
+
+            <div class="header">
+                <h1>Öva mera!</h1>
+                <p>Skriva Finska</p>
+            </div>
+
+            <div class="progress">
+                <div class="progress-item">
+                    <div class="number" id="writeTrainWordNumber">1/56</div>
+                    <div class="label">Ord</div>
+                </div>
+                <div class="progress-item">
+                    <div class="number" style="color: #16a34a;" id="writeTrainCorrectCount">0</div>
+                    <div class="label">Rätt</div>
+                </div>
+                <div class="progress-item">
+                    <div class="number" style="color: #dc2626;" id="writeTrainMistakeCount">0</div>
+                    <div class="label">Fel</div>
+                </div>
+            </div>
+
+            <div class="main-card">
+                <div class="word-box">
+                    <div class="label">Skriv det finska ordet för:</div>
+                    <div class="swedish" id="writeSwedishWord">var</div>
+                    <div class="button-group">
+                        <button class="button button-primary" onclick="writeSpeakWord()">🔊 Hör ordet</button>
+                        <button class="button button-secondary" onclick="writePracticeMore()">Öva mer</button>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <input type="text" id="writeAnswerInput" placeholder="Skriv här..." onkeypress="writeHandleKeyPress(event)">
+                </div>
+
+                <div id="writeFeedbackMessage"></div>
+
+                <div id="writeFeedbackBox" class="feedback-box hidden">
+                    <div class="title">Rätt svar:</div>
+                    <div class="word-display">
+                        <div class="word" id="writeWord1"></div>
+                        <div class="word" id="writeWord2"></div>
+                    </div>
+                    <div class="sentence-display" id="writeSentenceDisplay"></div>
+                    <button class="button-speak" onclick="writeSpeakFeedbackWords()">🔊 Spela upp orden</button>
+                </div>
+
+                <div class="button-container">
+                    <button class="button button-primary" id="writeCheckBtn" onclick="writeCheckAnswer()">Kontrollera ➜</button>
+                    <button class="btn-know" onclick="writeIKnow()">Jag kan ✓</button>
+                    <button class="btn-practice-more" onclick="writePracticeMoreBtn()">Träna mera 🔁</button>
+                </div>
+            </div>
+
+            <div class="tips">
+                <strong>Tips:</strong> Lyssna noga på ordet och försök skriva det korrekt. Du kan höra ordet hur många gånger som helst!
+            </div>
+        </div>
+    </div>
+
+        <!-- SUMMARYSKÄRM LYSSNA -->
+        <div id="listenSummaryScreen" class="summary-screen">
+            <div id="listenSummaryContent"></div>
+        </div>
+
+        <!-- SUMMARYSKÄRM SKRIVA -->
+        <div id="writeSummaryScreen" class="summary-screen">
+            <div id="writeSummaryContent"></div>
+        </div>
+
+    <script>
+        // ORDLISTA - Samma för båda aktiviteterna
+        const wordList = [
+            { finnish: "pois", swedish: "bort", emoji: "👋" },
+            { finnish: "takaisin", swedish: "tillbaka", emoji: "🔙" },
+            { finnish: "luokka", swedish: "klass", emoji: "🏫" },
+            { finnish: "lähden", swedish: "jag går iväg", emoji: "🚶" },
+            { finnish: "hän lähtee", swedish: "han går iväg", emoji: "🚪" },
+            { finnish: "maalaan", swedish: "jag målar", emoji: "🎨" },
+            { finnish: "hän maalaa", swedish: "han målar", emoji: "🖌️" },
+            { finnish: "leikin", swedish: "jag leker", emoji: "🧸" },
+            { finnish: "hän leikkii", swedish: "han leker", emoji: "⚽" },
+            { finnish: "sanon", swedish: "jag säger", emoji: "💬" },
+            { finnish: "hän sanoo", swedish: "han säger", emoji: "🗣️" },
+            { finnish: "seuraava", swedish: "följande", emoji: "⏭️" },
+            { finnish: "aika", swedish: "tid", emoji: "⏰" },
+            { finnish: "koti", swedish: "hem", emoji: "🏡" },
+            { finnish: "pari", swedish: "par", emoji: "👫" },
+            { finnish: "autotalli", swedish: "garage", emoji: "🚗" },
+            { finnish: "parveke", swedish: "balkong", emoji: "🌇" },
+            { finnish: "työhuone", swedish: "arbetsrum", emoji: "💼" },
+            { finnish: "vaatehuone", swedish: "klädrum", emoji: "👗" },
+            { finnish: "muistan", swedish: "jag minns", emoji: "🧠" },
+            { finnish: "hän muistaa", swedish: "han minns", emoji: "💭" },
+            { finnish: "voitan", swedish: "jag vinner", emoji: "🏆" },
+            { finnish: "hän voittaa", swedish: "han vinner", emoji: "🥇" },
+            { finnish: "vain", swedish: "bara, endast", emoji: "☝️" },
+            { finnish: "vastapäätä", swedish: "mitt emot", emoji: "↔️" },
+            { finnish: "oikea", swedish: "höger", emoji: "👉" },
+            { finnish: "vasen", swedish: "vänster", emoji: "👈" },
+            { finnish: "upea", swedish: "snygg", emoji: "✨" },
+            { finnish: "alasänky", swedish: "nedre sängen", emoji: "🛏️" },
+            { finnish: "yläsänky", swedish: "övre sängen", emoji: "🛌" },
+            { finnish: "hytti", swedish: "hytt", emoji: "🚢" },
+            { finnish: "minulle", swedish: "till mig", emoji: "🙋" },
+            { finnish: "lippu", swedish: "biljett", emoji: "🎫" },
+            { finnish: "rohkea", swedish: "modig", emoji: "🦁" },
+            { finnish: "menen", swedish: "jag går", emoji: "➡️" },
+            { finnish: "hän menee", swedish: "han går", emoji: "🏃" },
+            { finnish: "kokeilen", swedish: "jag prövar", emoji: "🧪" },
+            { finnish: "hän kokeilee", swedish: "han prövar", emoji: "🔬" },
+            { finnish: "odotan", swedish: "jag väntar", emoji: "⌛" },
+            { finnish: "hän odottaa", swedish: "han väntar", emoji: "🕐" },
+            { finnish: "uskallan", swedish: "jag vågar", emoji: "💪" },
+            { finnish: "hän uskaltaa", swedish: "han vågar", emoji: "🧗" },
+            { finnish: "haluan", swedish: "jag vill", emoji: "🙏" },
+            { finnish: "hän haluaa", swedish: "han vill", emoji: "😊" }
+        ];
+
+        const sentences = {
+            "pois": "Onko isä pois kotoa?",
+            "takaisin": "Onko sinun kirjasi takaisin pöydällä?",
+            "luokka": "Olemmeko me luokassa?",
+            "lähden": "Minulla on kiire, lähden.",
+            "hän lähtee": "Hän lähtee sinun pihaltasi.",
+            "maalaan": "Minulla on sivellin, maalaan seinän.",
+            "hän maalaa": "Hän maalaa pihalla.",
+            "leikin": "Leikin pihalla.",
+            "hän leikkii": "Leikkiikö hän luokassa?",
+            "sanon": "Sanon sinun nimesi.",
+            "hän sanoo": "Hän sanoo: minun kotini on kaunis.",
+            "seuraava": "Onko seuraava bussi pysäkillä?",
+            "aika": "Onko sinulla aikaa?",
+            "koti": "Minun kotini on kaupungissa.",
+            "pari": "Sinulla on pari kirjaa.",
+            "autotalli": "Ovatko avaimet autotallissa?",
+            "parveke": "Olemmeko me parvekkeella?",
+            "työhuone": "Onko työhuoneessa tietokone?",
+            "vaatehuone": "Vaatehuoneessa on paljon vaatteita.",
+            "muistan": "Muistan sinun puhelinnumerosi.",
+            "hän muistaa": "Muistaako hän minun nimeni?",
+            "voitan": "Minulla on hyvä kortti, voitan!",
+            "hän voittaa": "Hän voittaa pelin luokassa.",
+            "vain": "Minulla on vain yksi kirja.",
+            "vastapäätä": "Onko kauppa koulua vastapäätä?",
+            "oikea": "Minun oikea käteni on kipeä.",
+            "vasen": "Sinun vasen kätesi on kylmä.",
+            "upea": "Onko sinun autosi upea?",
+            "alasänky": "Onko alasängyssä tyyny?",
+            "yläsänky": "Oletko sinä yläsängyssä?",
+            "hytti": "Hytissä on kaksi sänkyä.",
+            "minulle": "Onko tämä lippu minulle?",
+            "lippu": "Minulla on lippu.",
+            "rohkea": "Oletko sinä rohkea?",
+            "menen": "Menen minun kotiini.",
+            "hän menee": "Hän menee sinun kotiisi.",
+            "kokeilen": "Kokeilen maalata pihalla.",
+            "hän kokeilee": "Hän kokeilee leikkiä luokassa.",
+            "odotan": "Odotan pihalla.",
+            "hän odottaa": "Hän odottaa luokassa.",
+            "uskallan": "Uskallan olla parvekkeella.",
+            "hän uskaltaa": "Uskaltaako hän olla yläsängyssä?",
+            "haluan": "Haluan olla kotona.",
+            "hän haluaa": "Hän haluaa olla parvekkeella."
+        };
+
+        // GLOBALA VARIABLER
+        let currentActivity = null;
+        let listenCurrentIndex = 0;
+        let listenCorrect = 0;
+        let listenMistakes = 0;
+        let listenShowHint = false;
+        let listenQueue = [];
+        let listenPracticeList = [];
+        let listenFirstAttempt = true;
+
+        let writeCurrentIndex = 0;
+        let writeCorrect = 0;
+        let writeMistakes = 0;
+        let writeQueue = [];
+        let writePracticeList = [];
+        let writeFirstAttempt = true;
+
+        // NAVIGERING
+        function selectActivity(activity) {
+            currentActivity = activity;
+            document.getElementById('mainScreen').style.display = 'none';
+            
+            if (activity === 'listen') {
+                document.getElementById('listenScreen').classList.add('active');
+                initializeListenWordList();
+            } else if (activity === 'write') {
+                document.getElementById('writeScreen').classList.add('active');
+                initializeWriteWordList();
+            }
+        }
+
+        function backToMain() {
+            document.getElementById('mainScreen').style.display = 'block';
+            document.getElementById('listenScreen').classList.remove('active');
+            document.getElementById('listenTrainingScreen').classList.remove('active');
+            document.getElementById('writeScreen').classList.remove('active');
+            document.getElementById('writeTrainingScreen').classList.remove('active');
+            currentActivity = null;
+        }
+
+        function backToActivitySelect(activity) {
+            if (activity === 'listen') {
+                document.getElementById('listenTrainingScreen').classList.remove('active');
+                document.getElementById('listenScreen').classList.add('active');
+            } else if (activity === 'write') {
+                document.getElementById('writeTrainingScreen').classList.remove('active');
+                document.getElementById('writeScreen').classList.add('active');
+            }
+        }
+
+        // ===== AKTIVITET 1: HÖRA & SKRIVA SVENSKA =====
+        function initializeListenWordList() {
+            const grid = document.getElementById('listenWordList');
+            grid.innerHTML = '';
+            wordList.forEach((word, index) => {
+                const button = document.createElement('button');
+                button.className = 'word-button';
+                button.innerHTML = `
+                    <div class="number">${index + 1}.</div>
+                    <div class="finnish">${word.finnish}</div>
+                    <div class="swedish">${word.swedish}</div>
+                `;
+                button.onclick = () => startListenTraining(index);
+                grid.appendChild(button);
+            });
+        }
+
+        function startListenTraining(index) {
+            listenQueue = [];
+            for (let i = 0; i < wordList.length; i++) {
+                listenQueue.push((index + i) % wordList.length);
+            }
+            listenPracticeList = [];
+            listenCorrect = 0;
+            listenMistakes = 0;
+            listenCurrentIndex = listenQueue.shift();
+            listenFirstAttempt = true;
+            document.getElementById('listenScreen').classList.remove('active');
+            document.getElementById('listenTrainingScreen').classList.add('active');
+            listenUpdateDisplay();
+            listenSpeakWord();
+            setTimeout(() => listenSpeakSentence(), 2000);
+        }
+
+        function listenUpdateDisplay() {
+            const word = wordList[listenCurrentIndex];
+            const firstWord = word.finnish.split(',')[0].toLowerCase();
+            
+            listenFirstAttempt = true;
+            const listenTotal = listenQueue.length + listenPracticeList.length + 1;
+            const listenCurrent = wordList.length - listenTotal + 1;
+            document.getElementById('listenFinnishWord').textContent = word.finnish;
+            document.getElementById('listenTrainWordNumber').textContent = `${listenCurrent}/${wordList.length}`;
+            document.getElementById('listenTrainCorrectCount').textContent = listenCorrect;
+            document.getElementById('listenTrainMistakeCount').textContent = listenMistakes;
+            document.getElementById('listenSentenceText').textContent = sentences[firstWord] || 'Ingen mening tillgänglig';
+            document.getElementById('listenAnswerInput').value = '';
+            document.getElementById('listenFeedbackBox').innerHTML = '';
+            document.getElementById('listenCheckBtn').style.display = 'block';
+            document.getElementById('listenAnswerInput').disabled = false;
+            listenShowHint = false;
+            listenUpdateHintButton();
+        }
+
+        function listenToggleHint() {
+            listenShowHint = !listenShowHint;
+            listenUpdateHintButton();
+        }
+
+        function listenUpdateHintButton() {
+            const hintBtn = document.getElementById('listenHintBtn');
+            const word = wordList[listenCurrentIndex];
+            hintBtn.textContent = listenShowHint ? word.emoji : '💡';
+        }
+
+        function listenSpeakWord() {
+            const word = wordList[listenCurrentIndex].finnish;
+            const utterance = new SpeechSynthesisUtterance(word);
+            utterance.lang = 'fi-FI';
+            utterance.rate = 0.85;
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+            
+            const voices = speechSynthesis.getVoices();
+            const finnishVoice = voices.find(voice => voice.lang.startsWith('fi'));
+            if (finnishVoice) {
+                utterance.voice = finnishVoice;
+            }
+            
+            speechSynthesis.speak(utterance);
+        }
+
+        function listenSpeakSentence() {
+            const word = wordList[listenCurrentIndex];
+            const firstWord = word.finnish.split(',')[0].toLowerCase();
+            const sentence = sentences[firstWord] || 'Ingen mening tillgänglig';
+            const utterance = new SpeechSynthesisUtterance(sentence);
+            utterance.lang = 'fi-FI';
+            utterance.rate = 0.80;
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+            
+            const voices = speechSynthesis.getVoices();
+            const finnishVoice = voices.find(voice => voice.lang.startsWith('fi'));
+            if (finnishVoice) {
+                utterance.voice = finnishVoice;
+            }
+            
+            speechSynthesis.speak(utterance);
+        }
+
+        function listenCheckAnswer() {
+            const answer = document.getElementById('listenAnswerInput').value.toLowerCase().trim();
+            const correct_answer = wordList[listenCurrentIndex].swedish.toLowerCase();
+            const feedbackBox = document.getElementById('listenFeedbackBox');
+            
+            const correct_answer_stripped = correct_answer.replace(/\s*\(obj\.\)/, '').trim();
+            const isCorrect = answer === correct_answer || answer === correct_answer_stripped;
+            
+            if (isCorrect) {
+                feedbackBox.innerHTML = '<div class="feedback-message correct">✓ Rätt!</div>';
+                listenCorrect++;
+                document.getElementById('listenTrainCorrectCount').textContent = listenCorrect;
+                document.getElementById('listenCheckBtn').style.display = 'none';
+                document.getElementById('listenAnswerInput').disabled = true;
+                setTimeout(() => { listenAdvance(false); }, 1500);
+            } else {
+                if (listenFirstAttempt) {
+                    listenPracticeList.push(listenCurrentIndex);
+                    listenFirstAttempt = false;
+                }
+                feedbackBox.innerHTML = '<div class="feedback-message incorrect">✗ Fel! Försök igen.</div>';
+                listenMistakes++;
+                document.getElementById('listenTrainMistakeCount').textContent = listenMistakes;
+                
+                const word = wordList[listenCurrentIndex];
+                const firstWord = word.finnish.split(',')[0].toLowerCase();
+                const sentence = sentences[firstWord];
+                
+                speechSynthesis.cancel();
+                
+                const utterance1 = new SpeechSynthesisUtterance(sentence);
+                utterance1.lang = 'fi-FI';
+                utterance1.rate = 0.80;
+                
+                const utterance2 = new SpeechSynthesisUtterance(word.finnish);
+                utterance2.lang = 'fi-FI';
+                utterance2.rate = 0.85;
+                
+                const utterance3 = new SpeechSynthesisUtterance(word.finnish);
+                utterance3.lang = 'fi-FI';
+                utterance3.rate = 0.85;
+                
+                const voices = speechSynthesis.getVoices();
+                const finnishVoice = voices.find(voice => voice.lang.startsWith('fi'));
+                if (finnishVoice) {
+                    utterance1.voice = finnishVoice;
+                    utterance2.voice = finnishVoice;
+                    utterance3.voice = finnishVoice;
+                }
+                
+                utterance1.onend = () => speechSynthesis.speak(utterance2);
+                utterance2.onend = () => speechSynthesis.speak(utterance3);
+                
+                speechSynthesis.speak(utterance1);
+                document.getElementById('listenAnswerInput').value = '';
+            }
+        }
+
+        function listenAdvance(addToPractice) {
+            if (addToPractice && !listenPracticeList.includes(listenCurrentIndex)) {
+                listenPracticeList.push(listenCurrentIndex);
+            }
+            if (listenQueue.length > 0) {
+                listenCurrentIndex = listenQueue.shift();
+                listenUpdateDisplay();
+                listenSpeakWord();
+                setTimeout(() => listenSpeakSentence(), 2000);
+            } else {
+                listenShowSummary();
+            }
+        }
+
+        function listenIKnow() { listenAdvance(false); }
+        function listenPracticeMoreBtn() { listenAdvance(true); }
+        function listenNextWord() { listenAdvance(false); }
+        function listenSkipWord() { listenAdvance(false); }
+
+        function listenShowSummary() {
+            document.getElementById('listenTrainingScreen').classList.remove('active');
+            const screen = document.getElementById('listenSummaryScreen');
+            const content = document.getElementById('listenSummaryContent');
+            screen.classList.add('active');
+            if (listenPracticeList.length === 0) {
+                content.innerHTML = `
+                    <div style="font-size:3rem;margin-bottom:1rem">🎉</div>
+                    <h2>Bra jobbat!</h2>
+                    <p>Du kan alla ord!</p>
+                    <button class="btn-finish" onclick="listenFinish()">Tillbaka till start</button>
+                `;
+            } else {
+                const wordItems = listenPracticeList.map(i =>
+                    `<li>${wordList[i].finnish} — ${wordList[i].swedish}</li>`
+                ).join('');
+                content.innerHTML = `
+                    <div style="font-size:3rem;margin-bottom:1rem">📋</div>
+                    <h2>Rundan klar!</h2>
+                    <p>Dessa ${listenPracticeList.length} ord vill du öva mer på:</p>
+                    <ul class="summary-word-list">${wordItems}</ul>
+                    <button class="btn-retry" onclick="listenRetry()">Öva på dessa igen 🔁</button>
+                    <button class="btn-finish" onclick="listenFinish()">Avsluta</button>
+                `;
+            }
+        }
+
+        function listenRetry() {
+            const retryList = [...listenPracticeList];
+            listenPracticeList = [];
+            listenQueue = retryList.slice(1);
+            listenCurrentIndex = retryList[0];
+            listenFirstAttempt = true;
+            document.getElementById('listenSummaryScreen').classList.remove('active');
+            document.getElementById('listenTrainingScreen').classList.add('active');
+            listenUpdateDisplay();
+            listenSpeakWord();
+            setTimeout(() => listenSpeakSentence(), 2000);
+        }
+
+        function listenFinish() {
+            document.getElementById('listenSummaryScreen').classList.remove('active');
+            backToMain();
+        }
+
+        function listenHandleKeyPress(e) {
+            if (e.key === 'Enter') {
+                listenCheckAnswer();
+            }
+        }
+
+        // ===== AKTIVITET 2: SKRIVA FINSKA =====
+        function initializeWriteWordList() {
+            const grid = document.getElementById('writeWordList');
+            grid.innerHTML = '';
+            wordList.forEach((word, index) => {
+                const button = document.createElement('button');
+                button.className = 'word-button';
+                button.innerHTML = `
+                    <div class="number">${index + 1}.</div>
+                    <div class="swedish">${word.swedish}</div>
+                    <div class="finnish">${word.finnish}</div>
+                `;
+                button.onclick = () => startWriteTraining(index);
+                grid.appendChild(button);
+            });
+        }
+
+        function startWriteTraining(index) {
+            writeQueue = [];
+            for (let i = 0; i < wordList.length; i++) {
+                writeQueue.push((index + i) % wordList.length);
+            }
+            writePracticeList = [];
+            writeCorrect = 0;
+            writeMistakes = 0;
+            writeCurrentIndex = writeQueue.shift();
+            writeFirstAttempt = true;
+            document.getElementById('writeScreen').classList.remove('active');
+            document.getElementById('writeTrainingScreen').classList.add('active');
+            writeUpdateDisplay();
+        }
+
+        function writeUpdateDisplay() {
+            const word = wordList[writeCurrentIndex];
+            const firstWord = word.finnish.split(',')[0].toLowerCase();
+            
+            writeFirstAttempt = true;
+            const writeTotal = writeQueue.length + writePracticeList.length + 1;
+            const writeCurrent = wordList.length - writeTotal + 1;
+            document.getElementById('writeSwedishWord').textContent = word.swedish;
+            document.getElementById('writeTrainWordNumber').textContent = `${writeCurrent}/${wordList.length}`;
+            document.getElementById('writeTrainCorrectCount').textContent = writeCorrect;
+            document.getElementById('writeTrainMistakeCount').textContent = writeMistakes;
+            document.getElementById('writeAnswerInput').value = '';
+            document.getElementById('writeFeedbackMessage').innerHTML = '';
+            document.getElementById('writeFeedbackBox').classList.add('hidden');
+            document.getElementById('writeCheckBtn').style.display = 'block';
+            document.getElementById('writeAnswerInput').disabled = false;
+        }
+
+        function writeSpeakWord() {
+            const word = wordList[writeCurrentIndex].finnish;
+            const utterance = new SpeechSynthesisUtterance(word);
+            utterance.lang = 'fi-FI';
+            utterance.rate = 0.85;
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+            
+            const voices = speechSynthesis.getVoices();
+            const finnishVoice = voices.find(voice => voice.lang.startsWith('fi'));
+            if (finnishVoice) {
+                utterance.voice = finnishVoice;
+            }
+            
+            speechSynthesis.speak(utterance);
+        }
+
+        function writePracticeMore() {
+            // Visa svar utan att räkna fel
+            writeShowFeedback();
+        }
+
+        function writeCheckAnswer() {
+            const answer = document.getElementById('writeAnswerInput').value.toLowerCase().trim();
+            const correct_answer = wordList[writeCurrentIndex].finnish.toLowerCase();
+            const feedbackMessage = document.getElementById('writeFeedbackMessage');
+            
+            // För ord med "minä" eller "jag", acceptera både med och utan pronomen
+            let isCorrect = answer === correct_answer;
+            
+            if (!isCorrect && correct_answer.startsWith('minä ')) {
+                const wordWithoutPronoun = correct_answer.replace('minä ', '');
+                isCorrect = answer === wordWithoutPronoun;
+            }
+
+            // Acceptera svar utan (obj.)
+            if (!isCorrect) {
+                const correct_answer_stripped = correct_answer.replace(/\s*\(obj\.\)/, '').trim();
+                isCorrect = answer === correct_answer_stripped;
+            }
+            
+            if (isCorrect) {
+                feedbackMessage.innerHTML = '<div class="feedback-message correct">✓ Rätt!</div>';
+                writeCorrect++;
+                document.getElementById('writeTrainCorrectCount').textContent = writeCorrect;
+                document.getElementById('writeCheckBtn').style.display = 'none';
+                document.getElementById('writeAnswerInput').disabled = true;
+                setTimeout(() => { writeAdvance(false); }, 1500);
+            } else {
+                if (writeFirstAttempt) {
+                    writePracticeList.push(writeCurrentIndex);
+                    writeFirstAttempt = false;
+                }
+                writeShowFeedback();
+            }
+        }
+
+        function writeShowFeedback() {
+            const feedbackMessage = document.getElementById('writeFeedbackMessage');
+            feedbackMessage.innerHTML = '<div class="feedback-message incorrect">✗ Försök igen.</div>';
+            writeMistakes++;
+            document.getElementById('writeTrainMistakeCount').textContent = writeMistakes;
+            
+            const word = wordList[writeCurrentIndex];
+            const firstWord = word.finnish.split(',')[0].toLowerCase();
+            const sentence = sentences[firstWord];
+            
+            document.getElementById('writeWord1').textContent = word.finnish;
+            document.getElementById('writeWord2').textContent = word.finnish;
+            document.getElementById('writeSentenceDisplay').textContent = sentence;
+            
+            const feedbackBox = document.getElementById('writeFeedbackBox');
+            feedbackBox.classList.remove('hidden');
+            
+            const emojiDisplay = feedbackBox.querySelector('.emoji-display');
+            if (emojiDisplay) {
+                emojiDisplay.textContent = word.emoji;
+            } else {
+                const newEmoji = document.createElement('div');
+                newEmoji.className = 'emoji-display';
+                newEmoji.textContent = word.emoji;
+                feedbackBox.insertBefore(newEmoji, feedbackBox.firstChild);
+            }
+            
+            const utterance1 = new SpeechSynthesisUtterance(word.finnish);
+            utterance1.lang = 'fi-FI';
+            utterance1.rate = 0.85;
+            utterance1.pitch = 1.0;
+            utterance1.volume = 1.0;
+            
+            const utterance2 = new SpeechSynthesisUtterance(word.finnish);
+            utterance2.lang = 'fi-FI';
+            utterance2.rate = 0.85;
+            utterance2.pitch = 1.0;
+            utterance2.volume = 1.0;
+            
+            const utterance3 = new SpeechSynthesisUtterance(sentence);
+            utterance3.lang = 'fi-FI';
+            utterance3.rate = 0.80;
+            utterance3.pitch = 1.0;
+            utterance3.volume = 1.0;
+            
+            const voices = speechSynthesis.getVoices();
+            const finnishVoice = voices.find(voice => voice.lang.startsWith('fi'));
+            if (finnishVoice) {
+                utterance1.voice = finnishVoice;
+                utterance2.voice = finnishVoice;
+                utterance3.voice = finnishVoice;
+            }
+            
+            speechSynthesis.cancel();
+            utterance1.onend = () => speechSynthesis.speak(utterance2);
+            utterance2.onend = () => speechSynthesis.speak(utterance3);
+            speechSynthesis.speak(utterance1);
+            
+            document.getElementById('writeAnswerInput').value = '';
+        }
+
+        function writeSpeakFeedbackWords() {
+            const word = wordList[writeCurrentIndex].finnish;
+            
+            const utterance1 = new SpeechSynthesisUtterance(word);
+            utterance1.lang = 'fi-FI';
+            utterance1.rate = 0.85;
+            utterance1.pitch = 1.0;
+            utterance1.volume = 1.0;
+            
+            const utterance2 = new SpeechSynthesisUtterance(word);
+            utterance2.lang = 'fi-FI';
+            utterance2.rate = 0.85;
+            utterance2.pitch = 1.0;
+            utterance2.volume = 1.0;
+            
+            const voices = speechSynthesis.getVoices();
+            const finnishVoice = voices.find(voice => voice.lang.startsWith('fi'));
+            if (finnishVoice) {
+                utterance1.voice = finnishVoice;
+                utterance2.voice = finnishVoice;
+            }
+            
+            speechSynthesis.cancel();
+            utterance1.onend = () => speechSynthesis.speak(utterance2);
+            speechSynthesis.speak(utterance1);
+        }
+
+        function writeAdvance(addToPractice) {
+            if (addToPractice && !writePracticeList.includes(writeCurrentIndex)) {
+                writePracticeList.push(writeCurrentIndex);
+            }
+            if (writeQueue.length > 0) {
+                writeCurrentIndex = writeQueue.shift();
+                writeUpdateDisplay();
+            } else {
+                writeShowSummary();
+            }
+        }
+
+        function writeIKnow() { writeAdvance(false); }
+        function writePracticeMoreBtn() { writeAdvance(true); }
+        function writeNextWord() { writeAdvance(false); }
+        function writeSkipWord() { writeAdvance(false); }
+
+        function writeShowSummary() {
+            document.getElementById('writeTrainingScreen').classList.remove('active');
+            const screen = document.getElementById('writeSummaryScreen');
+            const content = document.getElementById('writeSummaryContent');
+            screen.classList.add('active');
+            if (writePracticeList.length === 0) {
+                content.innerHTML = `
+                    <div style="font-size:3rem;margin-bottom:1rem">🎉</div>
+                    <h2>Bra jobbat!</h2>
+                    <p>Du kan alla ord!</p>
+                    <button class="btn-finish" onclick="writeFinish()">Tillbaka till start</button>
+                `;
+            } else {
+                const wordItems = writePracticeList.map(i =>
+                    `<li>${wordList[i].finnish} — ${wordList[i].swedish}</li>`
+                ).join('');
+                content.innerHTML = `
+                    <div style="font-size:3rem;margin-bottom:1rem">📋</div>
+                    <h2>Rundan klar!</h2>
+                    <p>Dessa ${writePracticeList.length} ord vill du öva mer på:</p>
+                    <ul class="summary-word-list">${wordItems}</ul>
+                    <button class="btn-retry" onclick="writeRetry()">Öva på dessa igen 🔁</button>
+                    <button class="btn-finish" onclick="writeFinish()">Avsluta</button>
+                `;
+            }
+        }
+
+        function writeRetry() {
+            const retryList = [...writePracticeList];
+            writePracticeList = [];
+            writeQueue = retryList.slice(1);
+            writeCurrentIndex = retryList[0];
+            writeFirstAttempt = true;
+            document.getElementById('writeSummaryScreen').classList.remove('active');
+            document.getElementById('writeTrainingScreen').classList.add('active');
+            writeUpdateDisplay();
+        }
+
+        function writeFinish() {
+            document.getElementById('writeSummaryScreen').classList.remove('active');
+            backToMain();
+        }
+
+        function writeHandleKeyPress(e) {
+            if (e.key === 'Enter') {
+                writeCheckAnswer();
+            }
+        }
+    </script>
+</body>
+</html>
